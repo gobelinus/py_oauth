@@ -6,6 +6,7 @@
 ## doc
 ##      oauth 1.0 specifications - http://tools.ietf.org/html/rfc5849
 ##      twitter - https://dev.twitter.com/docs/auth/oauth
+## https://dev.twitter.com/docs/auth/implementing-sign-twitter
 ###############################################################################  
 
 # standard imports
@@ -94,10 +95,13 @@ class TwitterOAuth10(oauth.OAuth10):
     def get_request_token(self, callback):
         """
         get request token from twitter
+        https://dev.twitter.com/docs/auth/implementing-sign-twitter
+        redirect to 'api' returned in return values, prior to redirection
+        save oauth token secret
         """
         method = 'POST'
-        apiurl = REQUEST_TOKEN_URL 
-        
+        apiurl = REQUEST_TOKEN_URL
+
         #for local testing use oob as twitter treats localhost urls like a desktop application
         #oauth_callback = 'oob'
         oauth_params = self.get_common_oauth_params()
@@ -118,8 +122,10 @@ class TwitterOAuth10(oauth.OAuth10):
                 return None
 
             #exchange this token for authorization
+            #https://dev.twitter.com/docs/auth/implementing-sign-twitter
+            # redirect to this api, prior to this api, save auth token secret,
             api = AUTHENTICATE_URL %dict(token=request_token['oauth_token'])
-            request_token['api'] = api 
+            request_token['api'] = api
             return request_token
 
         return
