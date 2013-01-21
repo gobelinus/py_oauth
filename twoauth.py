@@ -9,6 +9,8 @@
 ###############################################################################  
 
 # standard imports
+import urllib
+import logging
 
 # external libraries
 import httplib2
@@ -39,13 +41,13 @@ TOKEN_SECRET = ''
 logger = logging.getLogger(__name__)
 
 class TwitterOAuth10(oauth.OAuth10):
-    
+
     def __init__(self):
         #host is required, we will genereate key/secret from method above
         super(TwitterOAuth10, self).__init__(consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET)
 
-    def get_header(self, method=HTTP_METHOD, apiurl ='', oauth_params=None, query_params={}):
-        
+    def get_header(self, method=oauth.HTTP_METHOD, apiurl ='', oauth_params=None, query_params={}):
+
         oauth_string = self.generate_oauth_string(method=method
                                                   ,apiurl=apiurl
                                                   ,oauth_params=oauth_params
@@ -53,11 +55,11 @@ class TwitterOAuth10(oauth.OAuth10):
         auth_header = 'OAuth %s' %oauth_string
         return {'Authorization': auth_header}
 
-    def request_twitter(self, api='', method=HTTP_METHOD, oauth_header=None, params=None):
+    def request_twitter(self, api='', method=oauth.HTTP_METHOD, oauth_header=None, params=None):
         """
         Requests twitter with a url and fetches results.
         Doc - https://dev.twitter.com/docs/auth/oauth
-        
+
         Arguments:
             api - url to be fetched
             method - type of request GET/PUT/POST/DELETE
@@ -180,16 +182,12 @@ class TwitterOAuth10(oauth.OAuth10):
         Remixes code from get_home_timeline
         Twitter doc: https://dev.twitter.com/docs/api/1.1/post/statuses/update
         """
-        #print oauth_token, oauth_token_secret
-        if oauth_token == INIT_ERROR or oauth_token_secret == INIT_ERROR:
-            return
-        #return
 
         method = 'POST'
         oauth_params = self.get_common_oauth_params()
         oauth_params['oauth_token'] = oauth_token
         oauth_params['oauth_token_secret'] = oauth_token_secret
-        
+
         query_params = {'status' : status, 'trim_user' : 'true', 'include_entities' : 'true'}
         oauth_header = self.get_header(method, POST_STATUS_URL, oauth_params, query_params=query_params)
         response, content = ['', '']
