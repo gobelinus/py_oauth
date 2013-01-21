@@ -23,18 +23,11 @@ import urllib
 #define some constants
 HTTP_METHOD = 'GET'
 
-CONSUMER_KEY = ''
-CONSUMER_SECRET = ''
-
-# set these for own app tokens
-TOKEN = ''
-TOKEN_SECRET = ''
-
 #set logger
 logger = logging.getLogger(__name__)
 
 class OAuthBase(object):
-    
+
     #write common code between oauth 1 and oauth 2 here
     def __init__(self, consumer_key, consumer_secret):
         self.consumer_key = consumer_key
