@@ -228,7 +228,7 @@ class TwitterOAuth10(oauth.OAuth10):
         response, content = self.request_twitter(apiurl, method, oauth_header, query_params)
         return content
 
-    def oauth_login(self, url, oauth_token=TOKEN, oauth_token_secret=TOKEN_SECRET):
+    def twitter_login(self, url, oauth_token, oauth_token_secret):
         params = self.get_common_oauth_params()
         params['oauth_token'] = oauth_token
         params['oauth_token_secret'] = oauth_token_secret
