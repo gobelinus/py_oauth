@@ -31,21 +31,15 @@ USER_PROFILE_URL = 'https://api.twitter.com/1.1/users/show.json'
 USER_TIMELINE_URL = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
 AUTHENTICATE_URL = 'https://api.twitter.com/oauth/authenticate?oauth_token=%(token)s'
 
-CONSUMER_KEY = ''
-CONSUMER_SECRET = ''
-
-# set these for own app tokens
-TOKEN = ''
-TOKEN_SECRET = ''
 
 #set logger
 logger = logging.getLogger(__name__)
 
 class TwitterOAuth10(oauth.OAuth10):
 
-    def __init__(self):
+    def __init__(self, consumer_key, consumer_secret):
         #host is required, we will genereate key/secret from method above
-        super(TwitterOAuth10, self).__init__(consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET)
+        super(TwitterOAuth10, self).__init__(consumer_key=consumer_key, consumer_secret=consumer_secret)
 
     def get_header(self, method=oauth.HTTP_METHOD, apiurl ='', oauth_params=None, query_params={}):
 
@@ -159,7 +153,7 @@ class TwitterOAuth10(oauth.OAuth10):
 
         return None
 
-    def get_home_timeline(self, oauth_token=TOKEN, oauth_token_secret=TOKEN_SECRET, last_tweet=''):
+    def get_home_timeline(self, oauth_token, oauth_token_secret, last_tweet=''):
         """
         gets users home timeline to fetch tweets
         """
@@ -181,7 +175,7 @@ class TwitterOAuth10(oauth.OAuth10):
         response, content = self.request_twitter(apiurl, method, oauth_header, query_params)
         return content
 
-    def update_status(self, status, oauth_token=TOKEN, oauth_token_secret=TOKEN_SECRET):
+    def update_status(self, status, oauth_token, oauth_token_secret):
         """
         Post a tweet
 
@@ -213,7 +207,7 @@ class TwitterOAuth10(oauth.OAuth10):
         #print content
         return content
 
-    def get_user_timeline(self, oauth_token=TOKEN, oauth_token_secret=TOKEN_SECRET, last_tweet=''):
+    def get_user_timeline(self, oauth_token, oauth_token_secret, last_tweet=''):
         """
         gets user timeline to fetch tweets
         doc - https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline
