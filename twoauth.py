@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 ###############################################################################
 ##
@@ -7,7 +7,7 @@
 ##      oauth 1.0 specifications - http://tools.ietf.org/html/rfc5849
 ##      twitter - https://dev.twitter.com/docs/auth/oauth
 ## https://dev.twitter.com/docs/auth/implementing-sign-twitter
-###############################################################################  
+###############################################################################
 
 # standard imports
 import urllib
@@ -71,11 +71,11 @@ class TwitterOAuth10(oauth.OAuth10):
         request_headers = None
         if oauth_header:
             request_headers = oauth_header
-        
+
         qs = None
         if params and len(params) > 0 and isinstance(params, dict):
             qs = urllib.urlencode(params)
-        
+
         if qs:
             api = api +'?' + qs
 
@@ -102,7 +102,7 @@ class TwitterOAuth10(oauth.OAuth10):
         oauth_params['oauth_callback'] = callback
 
         oauth_header = self.get_header(method, apiurl, oauth_params)
-        
+
         response = None
         content = None
         response, content = self.request_twitter(apiurl, method, oauth_header)
@@ -162,8 +162,8 @@ class TwitterOAuth10(oauth.OAuth10):
         oauth_params = self.get_common_oauth_params()
         oauth_params['oauth_token'] = oauth_token
         oauth_params['oauth_token_secret'] = oauth_token_secret
-        
-        
+
+
         apiurl = HOME_TIMELINE_URL
         query_params = {'include_entities' : 'true', 'count': '100'}
         # if we have last tweet id, then use it else fetch latest 20 tweets (can be increased later)
@@ -228,3 +228,10 @@ class TwitterOAuth10(oauth.OAuth10):
         response, content = self.request_twitter(apiurl, method, oauth_header, query_params)
         return content
 
+    def twitter_login(self, url, oauth_token, oauth_token_secret):
+        params = self.get_common_oauth_params()
+        params['oauth_token'] = oauth_token
+        params['oauth_token_secret'] = oauth_token_secret
+        headers = self.get_header('GET', url, params)
+        resp = self.request_twitter(url, method='GET', oauth_header=headers)
+        return resp
