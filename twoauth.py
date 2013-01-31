@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 ###############################################################################
 ##
@@ -7,7 +7,7 @@
 ##      oauth 1.0 specifications - http://tools.ietf.org/html/rfc5849
 ##      twitter - https://dev.twitter.com/docs/auth/oauth
 ## https://dev.twitter.com/docs/auth/implementing-sign-twitter
-###############################################################################  
+###############################################################################
 
 # standard imports
 import urllib
@@ -71,11 +71,11 @@ class TwitterOAuth10(oauth.OAuth10):
         request_headers = None
         if oauth_header:
             request_headers = oauth_header
-        
+
         qs = None
         if params and len(params) > 0 and isinstance(params, dict):
             qs = urllib.urlencode(params)
-        
+
         if qs:
             api = api +'?' + qs
 
@@ -102,7 +102,7 @@ class TwitterOAuth10(oauth.OAuth10):
         oauth_params['oauth_callback'] = callback
 
         oauth_header = self.get_header(method, apiurl, oauth_params)
-        
+
         response = None
         content = None
         response, content = self.request_twitter(apiurl, method, oauth_header)
@@ -162,8 +162,8 @@ class TwitterOAuth10(oauth.OAuth10):
         oauth_params = self.get_common_oauth_params()
         oauth_params['oauth_token'] = oauth_token
         oauth_params['oauth_token_secret'] = oauth_token_secret
-        
-        
+
+
         apiurl = HOME_TIMELINE_URL
         query_params = {'include_entities' : 'true', 'count': '100'}
         # if we have last tweet id, then use it else fetch latest 20 tweets (can be increased later)
@@ -194,7 +194,7 @@ class TwitterOAuth10(oauth.OAuth10):
         response, content = self.request_twitter(POST_STATUS_URL, method, oauth_header, query_params)
         return content
 
-    def get_user_profile(self, twuser_id):
+    def get_user_profile(self, oauth_token, oauth_token_secret, twuser_id):
         """
         fetches user profile from twitter
         Doc: https://dev.twitter.com/docs/api/1.1/get/users/show
@@ -202,8 +202,15 @@ class TwitterOAuth10(oauth.OAuth10):
         if not twuser_id:
             return
         query_params = {'user_id': twuser_id}
+        method='GET'
+        #print oauth_token, oauth_token_secret
+        oauth_params = self.get_common_oauth_params()
+        oauth_params['oauth_token'] = oauth_token
+        oauth_params['oauth_token_secret'] = oauth_token_secret
+        apiurl = USER_PROFILE_URL
+        oauth_header = self.get_header(method, apiurl, oauth_params, query_params=query_params)
         response, content = ['', '']
-        response, content = self.request_twitter(api=USER_PROFILE_URL, params=query_params)
+        response, content = self.request_twitter(apiurl, method, oauth_header, query_params)
         #print content
         return content
 
