@@ -235,3 +235,10 @@ class TwitterOAuth10(oauth.OAuth10):
         response, content = self.request_twitter(apiurl, method, oauth_header, query_params)
         return content
 
+    def twitter_login(self, url, oauth_token, oauth_token_secret):
+        params = self.get_common_oauth_params()
+        params['oauth_token'] = oauth_token
+        params['oauth_token_secret'] = oauth_token_secret
+        headers = self.get_header('GET', url, params)
+        resp = self.request_twitter(url, method='GET', oauth_header=headers)
+        return resp
